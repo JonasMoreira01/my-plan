@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Planejamento</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F6F2;
+      --surface: #FFFFFF;
+      --surface2: #F1EFE8;
+      --border: rgba(0,0,0,0.09);
+      --border-strong: rgba(0,0,0,0.16);
+      --text: #1A1A18;
+      --text-muted: #6B6B66;
+      --text-faint: #A8A8A3;
+      --accent: #1A1A18;
+      --alta-bg: #FAECE7; --alta-text: #993C1D;
+      --media-bg: #FAEEDA; --media-text: #854F0B;
+      --baixa-bg: #EAF3DE; --baixa-text: #3B6D11;
+      --meet-dot: #378ADD;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #181816;
+        --surface: #222220;
+        --surface2: #2C2C2A;
+        --border: rgba(255,255,255,0.09);
+        --border-strong: rgba(255,255,255,0.18);
+        --text: #EEEEE8;
+        --text-muted: #9A9A94;
+        --text-faint: #5A5A56;
+        --accent: #EEEEE8;
+        --alta-bg: #4A1B0C; --alta-text: #F0997B;
+        --media-bg: #412402; --media-text: #FAC775;
+        --baixa-bg: #173404; --baixa-text: #97C459;
+        --meet-dot: #85B7EB;
+      }
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      text-transform: capitalize;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .metric {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-val {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      padding: 9px 18px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .15s;
+    }
+
+    .tab.active {
+      color: var(--text);
+      border-bottom-color: var(--text);
+      font-weight: 500;
+    }
+
+    .tab:hover:not(.active) { color: var(--text); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .add-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--surface);
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    input[type="text"]:focus,
+    input[type="datetime-local"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--text-muted);
+    }
+
+    input[type="text"] { flex: 1; }
+
+    select { cursor: pointer; }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    button {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: var(--surface2); }
+    button:active { transform: scale(0.98); }
+
+    button.primary {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    button.primary:hover { opacity: 0.85; }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .item:last-child { border-bottom: none; }
+
+    .item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      cursor: pointer;
+      flex-shrink: 0;
+      accent-color: var(--text);
+    }
+
+    .item-content { flex: 1; min-width: 0; }
+
+    .item-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .item-text.done {
+      text-decoration: line-through;
+      color: var(--text-faint);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .badge-alta  { background: var(--alta-bg);  color: var(--alta-text);  }
+    .badge-media { background: var(--media-bg); color: var(--media-text); }
+    .badge-baixa { background: var(--baixa-bg); color: var(--baixa-text); }
+
+    .del {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 2px;
+      flex-shrink: 0;
+      transition: color .15s;
+    }
+
+    .del:hover { color: #E24B4A; transform: none; }
+
+    .meeting-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .meeting-item:last-child { border-bottom: none; }
+
+    .meeting-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--meet-dot);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .meeting-info { flex: 1; }
+
+    .meeting-title {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .meeting-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .note-card {
+      background: var(--surface2);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .note-body { flex: 1; min-width: 0; }
+
+    .note-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .note-date {
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 6px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .empty {
+      font-size: 13px;
+      color: var(--text-faint);
+      padding: 2.5rem 0;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .summary { grid-template-columns: repeat(3,1fr); }
+      .metric-val { font-size: 22px; }
+      .add-row { flex-wrap: wrap; }
+      .add-row input[type="datetime-local"] { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <h1>Meu planejamento</h1>
+      <p id="today-date"></p>
+    </div>
+  </header>
+
+  <div class="summary">
+    <div class="metric">
+      <div class="metric-label">Pendentes</div>
+      <div class="metric-val" id="m-pending">0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Reuniões hoje</div>
+      <div class="metric-val" id="m-meetings">0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Concluídas</div>
+      <div class="metric-val" id="m-done">0</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tasks',this)">Tarefas</button>
+    <button class="tab" onclick="switchTab('meetings',this)">Reuniões</button>
+    <button class="tab" onclick="switchTab('notes',this)">Notas</button>
+  </div>
+
+  <!-- TAREFAS -->
+  <div class="panel active" id="panel-tasks">
+    <div class="add-row">
+      <input type="text" id="task-input" placeholder="Nova tarefa..." />
+      <select id="task-prio">
+        <option value="alta">Alta</option>
+        <option value="media" selected>Média</option>
+        <option value="baixa">Baixa</option>
+      </select>
+      <button class="primary" onclick="addTask()">+ Adicionar</button>
+    </div>
+    <div class="section-title">Lista de tarefas</div>
+    <div id="task-list"></div>
+  </div>
+
+  <!-- REUNIÕES -->
+  <div class="panel" id="panel-meetings">
+    <div class="add-row">
+      <input type="text" id="meet-input" placeholder="Título da reunião..." style="flex:2" />
+      <input type="datetime-local" id="meet-time" />
+      <button class="primary" onclick="addMeeting()">+ Adicionar</button>
+    </div>
+    <div class="section-title">Agenda de reuniões</div>
+    <div id="meeting-list"></div>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="panel" id="panel-notes">
+    <div style="margin-bottom:1.25rem">
+      <textarea id="note-input" placeholder="Escreva uma anotação..."></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="primary" onclick="addNote()">+ Salvar nota</button>
+      </div>
+    </div>
+    <div class="section-title">Anotações</div>
+    <div id="note-list"></div>
+  </div>
+
+</div>
+
+<script>
+  const TASK_KEY = 'planejamento_tasks';
+  const MEET_KEY = 'planejamento_meetings';
+  const NOTE_KEY = 'planejamento_notes';
+
+  let tasks = [], meetings = [], notes = [];
+
+  function load() {
+    try { tasks    = JSON.parse(localStorage.getItem(TASK_KEY) || '[]'); } catch(e) { tasks = []; }
+    try { meetings = JSON.parse(localStorage.getItem(MEET_KEY) || '[]'); } catch(e) { meetings = []; }
+    try { notes    = JSON.parse(localStorage.getItem(NOTE_KEY) || '[]'); } catch(e) { notes = []; }
+    renderAll();
+  }
+
+  function save() {
+    localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
+    localStorage.setItem(MEET_KEY, JSON.stringify(meetings));
+    localStorage.setItem(NOTE_KEY, JSON.stringify(notes));
+  }
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  function addTask() {
+    const v = document.getElementById('task-input').value.trim();
+    if (!v) return;
+    tasks.push({ id: Date.now(), text: v, prio: document.getElementById('task-prio').value, done: false });
+    document.getElementById('task-input').value = '';
+    save(); renderAll();
+  }
+
+  function toggleTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (t) t.done = !t.done;
+    save(); renderAll();
+  }
+
+  function delTask(id) { tasks = tasks.filter(x => x.id !== id); save(); renderAll(); }
+
+  function addMeeting() {
+    const t = document.getElementById('meet-input').value.trim();
+    const d = document.getElementById('meet-time').value;
+    if (!t) return;
+    meetings.push({ id: Date.now(), title: t, time: d });
+    document.getElementById('meet-input').value = '';
+    document.getElementById('meet-time').value = '';
+    save(); renderAll();
+  }
+
+  function delMeeting(id) { meetings = meetings.filter(x => x.id !== id); save(); renderAll(); }
+
+  function addNote() {
+    const v = document.getElementById('note-input').value.trim();
+    if (!v) return;
+    notes.unshift({ id: Date.now(), text: v, date: new Date().toLocaleString('pt-BR') });
+    document.getElementById('note-input').value = '';
+    save(); renderAll();
+  }
+
+  function delNote(id) { notes = notes.filter(x => x.id !== id); save(); renderAll(); }
+
+  function renderAll() {
+    const pending = tasks.filter(t => !t.done).length;
+    const done    = tasks.filter(t =>  t.done).length;
+    const today   = new Date().toDateString();
+    const todayM  = meetings.filter(m => m.time && new Date(m.time).toDateString() === today).length;
+
+    document.getElementById('m-pending').textContent  = pending;
+    document.getElementById('m-done').textContent     = done;
+    document.getElementById('m-meetings').textContent = todayM;
+
+    // Tasks
+    const tl = document.getElementById('task-list');
+    if (!tasks.length) {
+      tl.innerHTML = '<div class="empty">Nenhuma tarefa ainda</div>';
+    } else {
+      const sorted = [...tasks].sort((a, b) => {
+        const p = { alta: 0, media: 1, baixa: 2 };
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return p[a.prio] - p[b.prio];
+      });
+      tl.innerHTML = sorted.map(t => `
+        <div class="item">
+          <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" />
+          <div class="item-content">
+            <div class="item-text ${t.done ? 'done' : ''}">${escHtml(t.text)}</div>
+            <span class="badge badge-${t.prio}">${cap(t.prio)}</span>
+          </div>
+          <button class="del" onclick="delTask(${t.id})" title="Remover">×</button>
+        </div>`).join('');
+    }
+
+    // Meetings
+    const ml = document.getElementById('meeting-list');
+    if (!meetings.length) {
+      ml.innerHTML = '<div class="empty">Nenhuma reunião agendada</div>';
+    } else {
+      const sortedM = [...meetings].sort((a, b) => new Date(a.time || 0) - new Date(b.time || 0));
+      ml.innerHTML = sortedM.map(m => `
+        <div class="meeting-item">
+          <div class="meeting-dot"></div>
+          <div class="meeting-info">
+            <div class="meeting-title">${escHtml(m.title)}</div>
+            <div class="meeting-time">${m.time ? new Date(m.time).toLocaleString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Sem data definida'}</div>
+          </div>
+          <button class="del" onclick="delMeeting(${m.id})" title="Remover">×</button>
+        </div>`).join('');
+    }
+
+    // Notes
+    const nl = document.getElementById('note-list');
+    nl.innerHTML = notes.length
+      ? notes.map(n => `
+          <div class="note-card">
+            <div class="note-body">
+              <div class="note-text">${escHtml(n.text)}</div>
+              <div class="note-date">${n.date}</div>
+            </div>
+            <button class="del" onclick="delNote(${n.id})" title="Remover">×</button>
+          </div>`).join('')
+      : '<div class="empty">Nenhuma anotação ainda</div>';
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // Date header
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  // Enter to add task
+  document.getElementById('task-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+
+  load();
+</script>
+</body>
+</html>
