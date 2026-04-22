@@ -4,103 +4,174 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meu Planejamento</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #F7F6F2; --surface: #FFFFFF; --surface2: #F1EFE8;
-      --border: rgba(0,0,0,0.09); --border-strong: rgba(0,0,0,0.16);
+      --bg: #F7F6F2; --surface: #FFFFFF; --surface2: #F1EFE8; --surface3: #E8E6DF;
+      --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.15);
       --text: #1A1A18; --text-muted: #6B6B66; --text-faint: #A8A8A3;
-      --alta-bg: #FAECE7; --alta-text: #993C1D;
-      --media-bg: #FAEEDA; --media-text: #854F0B;
-      --baixa-bg: #EAF3DE; --baixa-text: #3B6D11;
-      --meet-dot: #378ADD; --radius: 10px; --radius-sm: 6px;
+      --alta-bg: #FAECE7; --alta-text: #993C1D; --alta-border: #F0997B;
+      --media-bg: #FAEEDA; --media-text: #854F0B; --media-border: #EF9F27;
+      --baixa-bg: #EAF3DE; --baixa-text: #3B6D11; --baixa-border: #97C459;
+      --meet-dot: #378ADD; --trash-bg: #FCEBEB; --trash-text: #A32D2D;
+      --radius: 12px; --radius-sm: 7px; --radius-xs: 5px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #181816; --surface: #222220; --surface2: #2C2C2A;
-        --border: rgba(255,255,255,0.09); --border-strong: rgba(255,255,255,0.18);
+        --bg: #181816; --surface: #222220; --surface2: #2C2C2A; --surface3: #363633;
+        --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
         --text: #EEEEE8; --text-muted: #9A9A94; --text-faint: #5A5A56;
-        --alta-bg: #4A1B0C; --alta-text: #F0997B;
-        --media-bg: #412402; --media-text: #FAC775;
-        --baixa-bg: #173404; --baixa-text: #97C459;
-        --meet-dot: #85B7EB;
+        --alta-bg: #4A1B0C; --alta-text: #F0997B; --alta-border: #993C1D;
+        --media-bg: #412402; --media-text: #FAC775; --media-border: #854F0B;
+        --baixa-bg: #173404; --baixa-text: #97C459; --baixa-border: #3B6D11;
+        --meet-dot: #85B7EB; --trash-bg: #501313; --trash-text: #F09595;
       }
     }
 
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
-    .page { max-width: 680px; margin: 0 auto; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .page { max-width: 700px; margin: 0 auto; }
 
+    /* HEADER */
     header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; }
     header h1 { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; }
-    header p { font-size: 13px; color: var(--text-muted); margin-top: 3px; text-transform: capitalize; }
+    header .sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; text-transform: capitalize; }
 
     .sync-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-faint); padding: 6px 10px; border: 0.5px solid var(--border); border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; transition: background .3s; }
-    .sync-dot.online  { background: #3B6D11; }
+    .sync-dot.online { background: #3B6D11; }
     .sync-dot.syncing { background: #854F0B; animation: pulse 1s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
 
-    .summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 2rem; }
-    .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem; }
-    .metric-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
-    .metric-val { font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace; }
+    /* SUMMARY */
+    .summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 2rem; }
+    .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: .875rem 1rem; cursor: default; }
+    .metric-label { font-size: 10px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: .05em; text-transform: uppercase; }
+    .metric-val { font-size: 26px; font-weight: 500; font-family: 'DM Mono', monospace; }
 
-    .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-    .tab { padding: 9px 18px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s; }
+    /* TABS */
+    .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; gap: 0; }
+    .tab { padding: 9px 16px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s; display: flex; align-items: center; gap: 6px; }
     .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
     .tab:hover:not(.active) { color: var(--text); }
+    .tab-count { font-size: 10px; background: var(--surface2); color: var(--text-muted); border-radius: 10px; padding: 1px 6px; font-family: 'DM Mono', monospace; }
+    .tab.active .tab-count { background: var(--surface3); color: var(--text); }
+
     .panel { display: none; } .panel.active { display: block; }
 
-    .add-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    /* TOOLBAR */
+    .toolbar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+    .toolbar-group { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0; }
 
+    /* INPUTS */
     input[type="text"], input[type="datetime-local"], select, textarea {
       font-family: 'DM Sans', sans-serif; font-size: 13px;
       background: var(--surface); border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius-sm); color: var(--text); padding: 8px 12px;
-      outline: none; transition: border-color .15s;
+      border-radius: var(--radius-sm); color: var(--text); padding: 8px 11px;
+      outline: none; transition: border-color .15s, box-shadow .15s;
     }
-    input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus, textarea:focus { border-color: var(--text-muted); }
+    input[type="text"]:focus, input[type="datetime-local"]:focus, select:focus, textarea:focus {
+      border-color: var(--text-muted); box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
     input[type="text"] { flex: 1; min-width: 0; }
-    textarea { width: 100%; resize: vertical; min-height: 80px; line-height: 1.5; }
+    textarea { width: 100%; resize: vertical; min-height: 70px; line-height: 1.5; }
+    select { cursor: pointer; }
 
-    button { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 16px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; transition: background .15s, transform .1s; white-space: nowrap; }
+    /* BUTTONS */
+    button { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 14px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; transition: background .15s, transform .1s; white-space: nowrap; }
     button:hover { background: var(--surface2); }
-    button:active { transform: scale(0.98); }
+    button:active { transform: scale(0.97); }
     button.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
     button.primary:hover { opacity: .85; }
+    button.icon-btn { padding: 7px 10px; font-size: 14px; line-height: 1; }
 
-    .section-title { font-size: 10px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .75rem; }
+    /* ADD FORM */
+    .add-form { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+    .add-form-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .add-form-row input[type="text"] { flex: 1; min-width: 160px; }
 
-    .item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
-    .item:last-child { border-bottom: none; }
-    .item input[type="checkbox"] { width: 16px; height: 16px; margin-top: 1px; cursor: pointer; flex-shrink: 0; accent-color: var(--text); }
-    .item-content { flex: 1; min-width: 0; }
-    .item-text { font-size: 14px; color: var(--text); line-height: 1.4; }
-    .item-text.done { text-decoration: line-through; color: var(--text-faint); }
-    .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; margin-top: 4px; }
-    .badge-alta  { background: var(--alta-bg);  color: var(--alta-text);  }
-    .badge-media { background: var(--media-bg); color: var(--media-text); }
-    .badge-baixa { background: var(--baixa-bg); color: var(--baixa-text); }
-    .del { background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 2px; flex-shrink: 0; transition: color .15s; }
-    .del:hover { color: #E24B4A; transform: none; }
+    .section-title { font-size: 10px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .75rem; display: flex; align-items: center; justify-content: space-between; }
 
-    .meeting-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
-    .meeting-item:last-child { border-bottom: none; }
-    .meeting-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--meet-dot); flex-shrink: 0; margin-top: 5px; }
-    .meeting-info { flex: 1; }
-    .meeting-title { font-size: 14px; color: var(--text); font-weight: 500; }
-    .meeting-time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    /* TASK CARD */
+    .task-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: box-shadow .15s, border-color .15s;
+    }
+    .task-card:hover { border-color: var(--border-strong); }
+    .task-card.done-card { opacity: .65; }
 
-    .note-card { background: var(--surface2); border-radius: var(--radius); padding: 1rem; margin-bottom: .75rem; display: flex; gap: 10px; align-items: flex-start; }
+    .task-card-main { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; }
+    .task-card-main input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; cursor: pointer; flex-shrink: 0; accent-color: var(--text); }
+    .task-card-body { flex: 1; min-width: 0; }
+    .task-card-title { font-size: 14px; color: var(--text); line-height: 1.4; font-weight: 500; }
+    .task-card-title.done { text-decoration: line-through; color: var(--text-faint); font-weight: 400; }
+    .task-card-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+    .task-card-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .task-card-actions { display: flex; gap: 4px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
+    .task-card:hover .task-card-actions { opacity: 1; }
+    .act-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 13px; padding: 4px 6px; border-radius: var(--radius-xs); transition: background .12s, color .12s; }
+    .act-btn:hover { background: var(--surface2); color: var(--text); transform: none; }
+    .act-btn.danger:hover { background: var(--trash-bg); color: var(--trash-text); }
+
+    /* BADGE */
+    .badge { display: inline-flex; align-items: center; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; border: 0.5px solid transparent; }
+    .badge-alta  { background: var(--alta-bg);  color: var(--alta-text);  border-color: var(--alta-border); }
+    .badge-media { background: var(--media-bg); color: var(--media-text); border-color: var(--media-border); }
+    .badge-baixa { background: var(--baixa-bg); color: var(--baixa-text); border-color: var(--baixa-border); }
+    .badge-done  { background: var(--surface2); color: var(--text-faint); }
+
+    /* MEETING CARD */
+    .meet-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; transition: border-color .15s; }
+    .meet-card:hover { border-color: var(--border-strong); }
+    .meet-left { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+    .meet-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--meet-dot); }
+    .meet-line { width: 1px; background: var(--border); flex: 1; min-height: 20px; }
+    .meet-info { flex: 1; min-width: 0; }
+    .meet-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+    .meet-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+    .meet-time-tag { font-size: 11px; color: var(--text-muted); background: var(--surface2); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 6px; font-family: 'DM Mono', monospace; }
+    .meet-card-actions { display: flex; gap: 4px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
+    .meet-card:hover .meet-card-actions { opacity: 1; }
+
+    /* NOTE CARD */
+    .note-card { background: var(--surface2); border-radius: var(--radius); padding: 1rem; margin-bottom: .75rem; display: flex; gap: 10px; align-items: flex-start; border: 0.5px solid var(--border); }
     .note-body { flex: 1; min-width: 0; }
     .note-text { font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
     .note-date { font-size: 11px; color: var(--text-faint); margin-top: 6px; font-family: 'DM Mono', monospace; }
+    .note-actions { display: flex; gap: 4px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
+    .note-card:hover .note-actions { opacity: 1; }
 
-    .empty   { font-size: 13px; color: var(--text-faint); padding: 2.5rem 0; text-align: center; }
+    /* TRASH ITEMS */
+    .trash-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; opacity: .75; }
+    .trash-badge { font-size: 10px; background: var(--trash-bg); color: var(--trash-text); padding: 2px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+    .trash-info { flex: 1; min-width: 0; }
+    .trash-title { font-size: 13px; color: var(--text-muted); text-decoration: line-through; line-height: 1.4; }
+    .trash-meta { font-size: 11px; color: var(--text-faint); margin-top: 3px; font-family: 'DM Mono', monospace; }
+    .restore-btn { font-size: 11px; padding: 4px 10px; }
+
+    .empty { font-size: 13px; color: var(--text-faint); padding: 2.5rem 0; text-align: center; }
     .loading { font-size: 13px; color: var(--text-faint); padding: 2rem 0; text-align: center; }
+
+    /* EDIT MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+    .modal { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; width: 100%; max-width: 460px; border: 0.5px solid var(--border-strong); }
+    .modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+    .modal-field { margin-bottom: .875rem; }
+    .modal-field label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); display: block; margin-bottom: 5px; }
+    .modal-field input[type="text"], .modal-field select, .modal-field textarea, .modal-field input[type="datetime-local"] { width: 100%; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; }
+
+    @media (max-width: 500px) {
+      .summary { grid-template-columns: repeat(2,1fr); }
+      .metric-val { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -109,7 +180,7 @@
   <header>
     <div>
       <h1>Meu planejamento</h1>
-      <p id="today-date"></p>
+      <p class="sub" id="today-date"></p>
     </div>
     <div class="sync-badge">
       <div class="sync-dot syncing" id="sync-dot"></div>
@@ -119,57 +190,127 @@
 
   <div class="summary">
     <div class="metric"><div class="metric-label">Pendentes</div><div class="metric-val" id="m-pending">—</div></div>
-    <div class="metric"><div class="metric-label">Reuniões hoje</div><div class="metric-val" id="m-meetings">—</div></div>
     <div class="metric"><div class="metric-label">Concluídas</div><div class="metric-val" id="m-done">—</div></div>
+    <div class="metric"><div class="metric-label">Reuniões hoje</div><div class="metric-val" id="m-meetings">—</div></div>
+    <div class="metric"><div class="metric-label">Na lixeira</div><div class="metric-val" id="m-trash">—</div></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('tasks',this)">Tarefas</button>
-    <button class="tab" onclick="switchTab('meetings',this)">Reuniões</button>
-    <button class="tab" onclick="switchTab('notes',this)">Notas</button>
+    <button class="tab active" onclick="switchTab('tasks',this)">Tarefas <span class="tab-count" id="tc-tasks">0</span></button>
+    <button class="tab" onclick="switchTab('meetings',this)">Reuniões <span class="tab-count" id="tc-meetings">0</span></button>
+    <button class="tab" onclick="switchTab('notes',this)">Notas <span class="tab-count" id="tc-notes">0</span></button>
+    <button class="tab" onclick="switchTab('trash',this)">🗑 Lixeira <span class="tab-count" id="tc-trash">0</span></button>
   </div>
 
+  <!-- TAREFAS -->
   <div class="panel active" id="panel-tasks">
-    <div class="add-row">
-      <input type="text" id="task-input" placeholder="Nova tarefa..." />
-      <select id="task-prio">
-        <option value="alta">Alta</option>
-        <option value="media" selected>Média</option>
-        <option value="baixa">Baixa</option>
-      </select>
-      <button class="primary" onclick="addTask()">+ Adicionar</button>
+    <div class="add-form">
+      <div class="add-form-row">
+        <input type="text" id="task-input" placeholder="Nova tarefa..." />
+        <select id="task-prio" style="width:auto">
+          <option value="alta">🔴 Alta</option>
+          <option value="media" selected>🟡 Média</option>
+          <option value="baixa">🟢 Baixa</option>
+        </select>
+        <button class="primary" onclick="addTask()">+ Adicionar</button>
+      </div>
+      <textarea id="task-desc" placeholder="Descrição (opcional)..." style="min-height:52px"></textarea>
     </div>
-    <div class="section-title">Lista de tarefas</div>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <input type="text" id="task-filter" placeholder="🔍 Filtrar tarefas..." style="max-width:220px" oninput="renderTasks()" />
+        <select id="task-filter-prio" onchange="renderTasks()" style="width:auto">
+          <option value="">Todas prioridades</option>
+          <option value="alta">Alta</option>
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+        <select id="task-filter-status" onchange="renderTasks()" style="width:auto">
+          <option value="">Todos status</option>
+          <option value="pending">Pendentes</option>
+          <option value="done">Concluídas</option>
+        </select>
+      </div>
+      <select id="task-sort" onchange="renderTasks()" style="width:auto">
+        <option value="created">↕ Criação</option>
+        <option value="prio">↕ Prioridade</option>
+        <option value="alpha">↕ A–Z</option>
+        <option value="done">↕ Concluídas por último</option>
+      </select>
+    </div>
+
+    <div class="section-title"><span id="task-count-label">Lista de tarefas</span></div>
     <div id="task-list"><div class="loading">Carregando...</div></div>
   </div>
 
+  <!-- REUNIÕES -->
   <div class="panel" id="panel-meetings">
-    <div class="add-row">
-      <input type="text" id="meet-input" placeholder="Título da reunião..." style="flex:2;min-width:140px" />
-      <input type="datetime-local" id="meet-time" style="flex:1;min-width:160px" />
-      <button class="primary" onclick="addMeeting()">+ Adicionar</button>
+    <div class="add-form">
+      <div class="add-form-row">
+        <input type="text" id="meet-input" placeholder="Título da reunião..." style="flex:2;min-width:140px" />
+        <input type="datetime-local" id="meet-time" style="flex:1;min-width:160px" />
+        <button class="primary" onclick="addMeeting()">+ Adicionar</button>
+      </div>
+      <textarea id="meet-desc" placeholder="Pauta / descrição (opcional)..." style="min-height:52px"></textarea>
     </div>
+
+    <div class="toolbar">
+      <input type="text" id="meet-filter" placeholder="🔍 Filtrar reuniões..." oninput="renderMeetings()" style="flex:1;max-width:280px" />
+      <select id="meet-sort" onchange="renderMeetings()" style="width:auto">
+        <option value="time">↕ Data/hora</option>
+        <option value="created">↕ Criação</option>
+        <option value="alpha">↕ A–Z</option>
+      </select>
+    </div>
+
     <div class="section-title">Agenda de reuniões</div>
     <div id="meeting-list"><div class="loading">Carregando...</div></div>
   </div>
 
+  <!-- NOTAS -->
   <div class="panel" id="panel-notes">
-    <div style="margin-bottom:1.25rem">
+    <div class="add-form">
       <textarea id="note-input" placeholder="Escreva uma anotação..."></textarea>
-      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <div style="display:flex;justify-content:flex-end">
         <button class="primary" onclick="addNote()">+ Salvar nota</button>
       </div>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="note-filter" placeholder="🔍 Filtrar notas..." oninput="renderNotes()" style="flex:1;max-width:280px" />
     </div>
     <div class="section-title">Anotações</div>
     <div id="note-list"><div class="loading">Carregando...</div></div>
   </div>
 
+  <!-- LIXEIRA -->
+  <div class="panel" id="panel-trash">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <p style="font-size:13px;color:var(--text-muted)">Itens excluídos ficam aqui. Você pode restaurá-los.</p>
+      <button onclick="clearTrash()" style="font-size:12px;color:var(--trash-text);border-color:var(--trash-text)">Esvaziar lixeira</button>
+    </div>
+    <div class="section-title">Itens excluídos</div>
+    <div id="trash-list"><div class="loading">Carregando...</div></div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2 id="modal-title">Editar</h2>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button onclick="closeModal()">Cancelar</button>
+      <button class="primary" onclick="saveEdit()">Salvar</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
   import {
-    getFirestore, collection, addDoc, deleteDoc, updateDoc,
+    getFirestore, collection, addDoc, deleteDoc, updateDoc, setDoc,
     doc, onSnapshot, query, orderBy, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
@@ -183,22 +324,22 @@
   });
 
   const db = getFirestore(app);
+  let tasks = [], meetings = [], notes = [], trashItems = [];
+  let editCtx = null;
 
-  let tasks = [], meetings = [], notes = [];
-
-  function setSync(state) {
-    const dot = document.getElementById('sync-dot');
-    const lbl = document.getElementById('sync-label');
-    dot.className = 'sync-dot ' + state;
-    lbl.textContent = { online: 'Sincronizado', syncing: 'Sincronizando...', connecting: 'Conectando...' }[state] || '';
+  // --- Sync ---
+  function setSync(s) {
+    document.getElementById('sync-dot').className = 'sync-dot ' + s;
+    document.getElementById('sync-label').textContent = { online:'Sincronizado', syncing:'Sincronizando...', connecting:'Conectando...' }[s] || '';
   }
 
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  // --- Helpers ---
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function cap(s) { return String(s||'').charAt(0).toUpperCase() + String(s||'').slice(1); }
+  function fmtDate(t) { return t ? new Date(t).toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Sem data'; }
+  function now() { return new Date().toLocaleString('pt-BR'); }
 
-  // --- Tab ---
+  // --- Tabs ---
   window.switchTab = (name, el) => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -206,125 +347,316 @@
     document.getElementById('panel-' + name).classList.add('active');
   };
 
-  // --- Tasks ---
+  // ==================== TASKS ====================
   const tasksCol = collection(db, 'tasks');
 
   window.addTask = async () => {
     const v = document.getElementById('task-input').value.trim();
     if (!v) return;
     setSync('syncing');
-    await addDoc(tasksCol, { text: v, prio: document.getElementById('task-prio').value, done: false, createdAt: serverTimestamp() });
+    await addDoc(tasksCol, {
+      text: v,
+      desc: document.getElementById('task-desc').value.trim(),
+      prio: document.getElementById('task-prio').value,
+      done: false,
+      createdAt: serverTimestamp()
+    });
     document.getElementById('task-input').value = '';
+    document.getElementById('task-desc').value = '';
   };
 
   window.toggleTask = async (id, done) => {
     setSync('syncing');
-    await updateDoc(doc(db, 'tasks', id), { done: !done });
+    await updateDoc(doc(db,'tasks',id), { done: !done });
   };
 
-  window.delTask = async id => {
+  window.trashTask = async (id) => {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return;
     setSync('syncing');
-    await deleteDoc(doc(db, 'tasks', id));
+    await addDoc(collection(db,'trash'), { type:'task', title: t.text, desc: t.desc||'', prio: t.prio, deletedAt: now(), originalId: id });
+    await deleteDoc(doc(db,'tasks',id));
   };
 
-  onSnapshot(query(tasksCol, orderBy('createdAt', 'asc')), snap => {
+  window.editTask = (id) => {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return;
+    editCtx = { type:'task', id };
+    document.getElementById('modal-title').textContent = 'Editar tarefa';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-field"><label>Título</label><input type="text" id="edit-text" value="${esc(t.text)}" /></div>
+      <div class="modal-field"><label>Descrição</label><textarea id="edit-desc" style="min-height:70px">${esc(t.desc||'')}</textarea></div>
+      <div class="modal-field"><label>Prioridade</label>
+        <select id="edit-prio">
+          <option value="alta" ${t.prio==='alta'?'selected':''}>🔴 Alta</option>
+          <option value="media" ${t.prio==='media'?'selected':''}>🟡 Média</option>
+          <option value="baixa" ${t.prio==='baixa'?'selected':''}>🟢 Baixa</option>
+        </select>
+      </div>`;
+    document.getElementById('modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('edit-text').focus(), 50);
+  };
+
+  onSnapshot(query(tasksCol, orderBy('createdAt','asc')), snap => {
     tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderTasks(); renderSummary(); setSync('online');
   });
 
-  function renderTasks() {
+  window.renderTasks = () => {
     const el = document.getElementById('task-list');
-    if (!tasks.length) { el.innerHTML = '<div class="empty">Nenhuma tarefa ainda</div>'; return; }
-    const sorted = [...tasks].sort((a,b) => {
-      const p = { alta:0, media:1, baixa:2 };
-      if (a.done !== b.done) return a.done ? 1 : -1;
-      return p[a.prio] - p[b.prio];
-    });
-    el.innerHTML = sorted.map(t => `
-      <div class="item">
-        <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}',${t.done})" />
-        <div class="item-content">
-          <div class="item-text ${t.done?'done':''}">${esc(t.text)}</div>
-          <span class="badge badge-${t.prio}">${cap(t.prio)}</span>
-        </div>
-        <button class="del" onclick="delTask('${t.id}')" title="Remover">×</button>
-      </div>`).join('');
-  }
+    const filterText = (document.getElementById('task-filter')?.value||'').toLowerCase();
+    const filterPrio = document.getElementById('task-filter-prio')?.value||'';
+    const filterStatus = document.getElementById('task-filter-status')?.value||'';
+    const sortBy = document.getElementById('task-sort')?.value||'created';
 
-  // --- Meetings ---
+    let filtered = tasks.filter(t => {
+      if (filterText && !t.text.toLowerCase().includes(filterText) && !(t.desc||'').toLowerCase().includes(filterText)) return false;
+      if (filterPrio && t.prio !== filterPrio) return false;
+      if (filterStatus === 'pending' && t.done) return false;
+      if (filterStatus === 'done' && !t.done) return false;
+      return true;
+    });
+
+    filtered.sort((a,b) => {
+      if (sortBy === 'prio') { const p={alta:0,media:1,baixa:2}; return p[a.prio]-p[b.prio]; }
+      if (sortBy === 'alpha') return a.text.localeCompare(b.text, 'pt-BR');
+      if (sortBy === 'done') { if (a.done!==b.done) return a.done?1:-1; return 0; }
+      return 0;
+    });
+
+    document.getElementById('task-count-label').textContent = `${filtered.length} tarefa${filtered.length!==1?'s':''}`;
+    document.getElementById('tc-tasks').textContent = tasks.length;
+
+    if (!filtered.length) { el.innerHTML = '<div class="empty">Nenhuma tarefa encontrada</div>'; return; }
+
+    el.innerHTML = filtered.map(t => `
+      <div class="task-card ${t.done?'done-card':''}">
+        <div class="task-card-main">
+          <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}',${t.done})" />
+          <div class="task-card-body">
+            <div class="task-card-title ${t.done?'done':''}">${esc(t.text)}</div>
+            ${t.desc ? `<div class="task-card-desc">${esc(t.desc)}</div>` : ''}
+            <div class="task-card-meta">
+              <span class="badge badge-${t.prio}">${cap(t.prio)}</span>
+              ${t.done ? '<span class="badge badge-done">Concluída</span>' : ''}
+            </div>
+          </div>
+          <div class="task-card-actions">
+            <button class="act-btn" onclick="editTask('${t.id}')" title="Editar">✏️</button>
+            <button class="act-btn danger" onclick="trashTask('${t.id}')" title="Excluir">🗑</button>
+          </div>
+        </div>
+      </div>`).join('');
+  };
+
+  // ==================== MEETINGS ====================
   const meetCol = collection(db, 'meetings');
 
   window.addMeeting = async () => {
     const t = document.getElementById('meet-input').value.trim();
-    const d = document.getElementById('meet-time').value;
     if (!t) return;
     setSync('syncing');
-    await addDoc(meetCol, { title: t, time: d, createdAt: serverTimestamp() });
+    await addDoc(meetCol, {
+      title: t,
+      desc: document.getElementById('meet-desc').value.trim(),
+      time: document.getElementById('meet-time').value,
+      createdAt: serverTimestamp()
+    });
     document.getElementById('meet-input').value = '';
+    document.getElementById('meet-desc').value = '';
     document.getElementById('meet-time').value = '';
   };
 
-  window.delMeeting = async id => {
+  window.trashMeeting = async (id) => {
+    const m = meetings.find(x => x.id === id);
+    if (!m) return;
     setSync('syncing');
-    await deleteDoc(doc(db, 'meetings', id));
+    await addDoc(collection(db,'trash'), { type:'reunião', title: m.title, desc: m.desc||'', deletedAt: now() });
+    await deleteDoc(doc(db,'meetings',id));
   };
 
-  onSnapshot(query(meetCol, orderBy('createdAt', 'asc')), snap => {
+  window.editMeeting = (id) => {
+    const m = meetings.find(x => x.id === id);
+    if (!m) return;
+    editCtx = { type:'meeting', id };
+    document.getElementById('modal-title').textContent = 'Editar reunião';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-field"><label>Título</label><input type="text" id="edit-text" value="${esc(m.title)}" /></div>
+      <div class="modal-field"><label>Pauta / descrição</label><textarea id="edit-desc" style="min-height:70px">${esc(m.desc||'')}</textarea></div>
+      <div class="modal-field"><label>Data e hora</label><input type="datetime-local" id="edit-time" value="${m.time||''}" /></div>`;
+    document.getElementById('modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('edit-text').focus(), 50);
+  };
+
+  onSnapshot(query(meetCol, orderBy('createdAt','asc')), snap => {
     meetings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderMeetings(); renderSummary(); setSync('online');
   });
 
-  function renderMeetings() {
+  window.renderMeetings = () => {
     const el = document.getElementById('meeting-list');
-    if (!meetings.length) { el.innerHTML = '<div class="empty">Nenhuma reunião agendada</div>'; return; }
-    const sorted = [...meetings].sort((a,b) => new Date(a.time||0) - new Date(b.time||0));
-    el.innerHTML = sorted.map(m => `
-      <div class="meeting-item">
-        <div class="meeting-dot"></div>
-        <div class="meeting-info">
-          <div class="meeting-title">${esc(m.title)}</div>
-          <div class="meeting-time">${m.time ? new Date(m.time).toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Sem data definida'}</div>
-        </div>
-        <button class="del" onclick="delMeeting('${m.id}')" title="Remover">×</button>
-      </div>`).join('');
-  }
+    const filterText = (document.getElementById('meet-filter')?.value||'').toLowerCase();
+    const sortBy = document.getElementById('meet-sort')?.value||'time';
 
-  // --- Notes ---
+    let filtered = meetings.filter(m => !filterText || m.title.toLowerCase().includes(filterText) || (m.desc||'').toLowerCase().includes(filterText));
+
+    filtered.sort((a,b) => {
+      if (sortBy === 'time') return new Date(a.time||0) - new Date(b.time||0);
+      if (sortBy === 'alpha') return a.title.localeCompare(b.title,'pt-BR');
+      return 0;
+    });
+
+    document.getElementById('tc-meetings').textContent = meetings.length;
+
+    if (!filtered.length) { el.innerHTML = '<div class="empty">Nenhuma reunião encontrada</div>'; return; }
+
+    el.innerHTML = filtered.map(m => `
+      <div class="meet-card">
+        <div class="meet-left"><div class="meet-dot"></div><div class="meet-line"></div></div>
+        <div class="meet-info">
+          <div class="meet-title">${esc(m.title)}</div>
+          ${m.desc ? `<div class="meet-desc">${esc(m.desc)}</div>` : ''}
+          <div class="meet-time-tag">${fmtDate(m.time)}</div>
+        </div>
+        <div class="meet-card-actions">
+          <button class="act-btn" onclick="editMeeting('${m.id}')" title="Editar">✏️</button>
+          <button class="act-btn danger" onclick="trashMeeting('${m.id}')" title="Excluir">🗑</button>
+        </div>
+      </div>`).join('');
+  };
+
+  // ==================== NOTES ====================
   const notesCol = collection(db, 'notes');
 
   window.addNote = async () => {
     const v = document.getElementById('note-input').value.trim();
     if (!v) return;
     setSync('syncing');
-    await addDoc(notesCol, { text: v, date: new Date().toLocaleString('pt-BR'), createdAt: serverTimestamp() });
+    await addDoc(notesCol, { text: v, date: now(), createdAt: serverTimestamp() });
     document.getElementById('note-input').value = '';
   };
 
-  window.delNote = async id => {
+  window.trashNote = async (id) => {
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
     setSync('syncing');
-    await deleteDoc(doc(db, 'notes', id));
+    await addDoc(collection(db,'trash'), { type:'nota', title: n.text.substring(0,80), deletedAt: now() });
+    await deleteDoc(doc(db,'notes',id));
   };
 
-  onSnapshot(query(notesCol, orderBy('createdAt', 'desc')), snap => {
+  window.editNote = (id) => {
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
+    editCtx = { type:'note', id };
+    document.getElementById('modal-title').textContent = 'Editar nota';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-field"><label>Conteúdo</label><textarea id="edit-text" style="min-height:120px">${esc(n.text)}</textarea></div>`;
+    document.getElementById('modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('edit-text').focus(), 50);
+  };
+
+  onSnapshot(query(notesCol, orderBy('createdAt','desc')), snap => {
     notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderNotes(); setSync('online');
   });
 
-  function renderNotes() {
+  window.renderNotes = () => {
     const el = document.getElementById('note-list');
-    el.innerHTML = notes.length
-      ? notes.map(n => `
+    const filterText = (document.getElementById('note-filter')?.value||'').toLowerCase();
+    const filtered = notes.filter(n => !filterText || n.text.toLowerCase().includes(filterText));
+    document.getElementById('tc-notes').textContent = notes.length;
+    el.innerHTML = filtered.length
+      ? filtered.map(n => `
           <div class="note-card">
             <div class="note-body">
               <div class="note-text">${esc(n.text)}</div>
               <div class="note-date">${n.date}</div>
             </div>
-            <button class="del" onclick="delNote('${n.id}')" title="Remover">×</button>
+            <div class="note-actions">
+              <button class="act-btn" onclick="editNote('${n.id}')" title="Editar">✏️</button>
+              <button class="act-btn danger" onclick="trashNote('${n.id}')" title="Excluir">🗑</button>
+            </div>
           </div>`).join('')
-      : '<div class="empty">Nenhuma anotação ainda</div>';
+      : '<div class="empty">Nenhuma nota encontrada</div>';
+  };
+
+  // ==================== TRASH ====================
+  const trashCol = collection(db, 'trash');
+
+  window.clearTrash = async () => {
+    if (!confirm('Esvaziar a lixeira permanentemente?')) return;
+    setSync('syncing');
+    await Promise.all(trashItems.map(t => deleteDoc(doc(db,'trash',t.id))));
+  };
+
+  onSnapshot(query(trashCol, orderBy('deletedAt','desc')), snap => {
+    trashItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderTrash(); setSync('online');
+  });
+
+  function renderTrash() {
+    const el = document.getElementById('trash-list');
+    document.getElementById('tc-trash').textContent = trashItems.length;
+    document.getElementById('m-trash').textContent = trashItems.length;
+
+    if (!trashItems.length) { el.innerHTML = '<div class="empty">Lixeira vazia</div>'; return; }
+
+    el.innerHTML = trashItems.map(t => `
+      <div class="trash-item">
+        <span class="trash-badge">${cap(t.type)}</span>
+        <div class="trash-info">
+          <div class="trash-title">${esc(t.title)}</div>
+          ${t.desc ? `<div class="trash-meta" style="color:var(--text-faint);font-style:italic">${esc(t.desc.substring(0,60))}${t.desc.length>60?'…':''}</div>` : ''}
+          <div class="trash-meta">Excluído em ${t.deletedAt}</div>
+        </div>
+        <button class="act-btn danger" onclick="deleteForever('${t.id}')" title="Excluir permanentemente">✕</button>
+      </div>`).join('');
   }
 
-  // --- Summary ---
+  window.deleteForever = async (id) => {
+    setSync('syncing');
+    await deleteDoc(doc(db,'trash',id));
+  };
+
+  // ==================== MODAL ====================
+  window.closeModal = (e) => {
+    if (!e || e.target === document.getElementById('modal')) {
+      document.getElementById('modal').style.display = 'none';
+      editCtx = null;
+    }
+  };
+
+  window.saveEdit = async () => {
+    if (!editCtx) return;
+    setSync('syncing');
+    const { type, id } = editCtx;
+
+    if (type === 'task') {
+      await updateDoc(doc(db,'tasks',id), {
+        text: document.getElementById('edit-text').value.trim(),
+        desc: document.getElementById('edit-desc').value.trim(),
+        prio: document.getElementById('edit-prio').value
+      });
+    } else if (type === 'meeting') {
+      await updateDoc(doc(db,'meetings',id), {
+        title: document.getElementById('edit-text').value.trim(),
+        desc: document.getElementById('edit-desc').value.trim(),
+        time: document.getElementById('edit-time').value
+      });
+    } else if (type === 'note') {
+      await updateDoc(doc(db,'notes',id), {
+        text: document.getElementById('edit-text').value.trim()
+      });
+    }
+
+    document.getElementById('modal').style.display = 'none';
+    editCtx = null;
+  };
+
+  // ESC fecha modal
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal({}); });
+
+  // ==================== SUMMARY ====================
   function renderSummary() {
     const today = new Date().toDateString();
     document.getElementById('m-pending').textContent  = tasks.filter(t => !t.done).length;
@@ -332,11 +664,11 @@
     document.getElementById('m-meetings').textContent = meetings.filter(m => m.time && new Date(m.time).toDateString() === today).length;
   }
 
-  // --- Init ---
+  // ==================== INIT ====================
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('pt-BR', {
     weekday:'long', day:'numeric', month:'long', year:'numeric'
   });
-  document.getElementById('task-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+  document.getElementById('task-input').addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) addTask(); });
 </script>
 </body>
 </html>
